@@ -1,4 +1,4 @@
-import { useRef, useContext, FormEvent } from 'react'
+import { useRef, useContext, useEffect, FormEvent } from 'react'
 import BoardContext from 'context/Board/context'
 import generateRandomUsername from 'utils/generateRandomUsername'
 import VisuallyHidden from 'components/VisuallyHidden'
@@ -9,7 +9,7 @@ const MAX_LENGTH = 12
 
 const UsernameForm = () => {
   const input = useRef<HTMLInputElement>(null)
-  const { socket, usernameError } = useContext(BoardContext)
+  const { socket, usernameError, setUsernameError } = useContext(BoardContext)
 
   const handleSubmit = (e: FormEvent) => {
     if (!input.current?.checkValidity()) return
@@ -17,15 +17,22 @@ const UsernameForm = () => {
     e.preventDefault()
 
     socket!.emitNewUsername(input.current.value)
-
-    const form = e.target as HTMLFormElement
-
-    form.reset()
   }
 
   const handleGenerateUsername = () => {
     input.current!.value = generateRandomUsername(MIN_LENGTH, MAX_LENGTH)
+    setUsernameError!('')
   }
+
+  const handleChange = () => {
+    setUsernameError!('')
+    input.current!.setCustomValidity('')
+  }
+
+  useEffect(() => {
+    input.current!.setCustomValidity(usernameError || '')
+    input.current!.offsetParent === null && input.current!.reportValidity()
+  }, [usernameError])
 
   return (
     <>
@@ -39,11 +46,11 @@ const UsernameForm = () => {
         </label>
         <input
           ref={input}
+          onInput={handleChange}
           className="input"
           type="text"
           name="username"
           id="username"
-          aria-labelledby="username-error"
           autoComplete="username"
           placeholder="3-14 characters, letters and numbers"
           pattern={`^(?=[a-zA-Z0-9._]{${MIN_LENGTH},${MAX_LENGTH}}$)(?!.*[_.]{2})[^_.].*[^_.]$`}
@@ -60,16 +67,6 @@ const UsernameForm = () => {
           </button>
           <button className="button">Ready</button>
         </div>
-        {usernameError && (
-          <p
-            className="error"
-            id="username-error"
-            aria-live="assertive"
-            aria-relevant="additions removals"
-          >
-            {usernameError}
-          </p>
-        )}
       </form>
       <style jsx>{resetButton}</style>
       <style jsx>{`
@@ -124,10 +121,6 @@ const UsernameForm = () => {
           background-color: var(--primary-color);
           padding: 0.5rem 1rem;
           color: var(--secondary-color);
-        }
-
-        .error {
-          color: var(--error-color);
         }
       `}</style>
     </>

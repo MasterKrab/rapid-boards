@@ -161,6 +161,8 @@ const socket = (server) => {
       socket.on('newMessage', async (content) => {
         if (typeof content !== 'string' || !content.trim()) return
 
+        if (content.length > 500) content = content.slice(0, 500)
+
         const message = {
           content: cleanText(content),
           id: crypto.randomUUID(),

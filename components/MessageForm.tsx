@@ -1,9 +1,10 @@
-import { useRef, useContext, FormEvent } from 'react'
+import { useRef, useContext, FormEvent, KeyboardEvent } from 'react'
 import BoardContext from 'context/Board/context'
 import resetButton from 'styles/resetButton'
 
 const MessageForm = () => {
   const textBox = useRef<HTMLTextAreaElement>(null)
+  const button = useRef<HTMLButtonElement>(null)
   const { socket } = useContext(BoardContext)
 
   const handleSubmit = (e: FormEvent) => {
@@ -18,17 +19,36 @@ const MessageForm = () => {
     form.reset()
   }
 
+  const handleChange = () => {
+    const validity = !textBox.current!.value.trim() ? 'Message is required' : ''
+
+    textBox.current!.setCustomValidity(validity)
+  }
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key !== 'Enter' || e.shiftKey) return
+
+    e.preventDefault()
+    button.current!.click()
+  }
+
   return (
     <>
       <form onSubmit={handleSubmit} className="form">
         <textarea
           ref={textBox}
+          onKeyDown={handleKeyDown}
+          onChange={handleChange}
+          maxLength={500}
           className="text-box"
           aria-label="New message"
           placeholder="New message..."
+          name="message"
           required
         />
-        <button className="button">Send</button>
+        <button ref={button} className="button">
+          Send
+        </button>
       </form>
       <style jsx>{resetButton}</style>
       <style jsx>{`
