@@ -268,12 +268,6 @@ const Canvas = () => {
     canvas.on('mouse:down', ({ e }) => {
       if (isPinch.current) return
 
-      if (tool === TOOLS.COLOR_PICKER) {
-        setColor!(getHexColorFromCanvas(e, canvas))
-
-        if (!zoomMode) return
-      }
-
       if (zoomMode) {
         originX.current = e.clientX
         originY.current = e.clientY
@@ -281,6 +275,9 @@ const Canvas = () => {
         changeCursor('grabbing')
         return
       }
+
+      if (tool === TOOLS.COLOR_PICKER)
+        return setColor!(getHexColorFromCanvas(e, canvas))
 
       const { x, y } = canvas.getPointer(e)
 
@@ -334,9 +331,7 @@ const Canvas = () => {
         )
     })
 
-    canvas.on('mouse:up', ({ e }) => {
-      if (tool === TOOLS.COLOR_PICKER) return
-
+    canvas.on('mouse:up', () => {
       canvas.discardActiveObject()
       isDragging.current = false
       isPainting.current = false
@@ -366,7 +361,6 @@ const Canvas = () => {
       canvas.off('mouse:up')
       canvas.off('mouse:move')
       canvas.off('mouse:wheel')
-      canvas.off('click')
     }
   }, [element, socket, tool, color, width, zoomMode, setColor])
 
