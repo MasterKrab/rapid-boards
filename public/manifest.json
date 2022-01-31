@@ -1,0 +1,22 @@
+{
+  "theme_color": "#323232",
+  "background_color": "#323232",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "name": "Rapid Boards",
+  "short_name": "RapidBoards",
+  "description": "Create and share your own boards with your friends.",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
