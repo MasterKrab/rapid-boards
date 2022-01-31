@@ -13,4 +13,5 @@ export const detect = async (text) => {
   return filter.isProfane(text) ? 'cannot have bad words' : null
 }
 
-export const cleanText = (text) => filter.clean(removeUrls(text))
+// Add _ to the start to prevent an error when using emojis
+export const cleanText = (text) => filter.clean(`_${removeUrls(text)}`).slice(1)
