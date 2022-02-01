@@ -10,7 +10,12 @@ const Messages = () => {
 
   return (
     <>
-      <section className="messages scrollbar">
+      <section
+        className="messages scrollbar"
+        aria-label="Chat messages"
+        aria-live="polite"
+        tabIndex={0}
+      >
         {messages.length ? (
           <ScrollToBottom>
             {messages.map(({ id, username, date, content }) => (

@@ -38,6 +38,7 @@ const Chat = () => {
         onClick={handleToggle}
         aria-label={`Open chat (${notifications} notifications)`}
         data-notifications={notifications > 9 ? '9+' : notifications}
+        aria-live="polite"
       >
         <ChatIcon width="1.25rem" height="1.25rem" />
       </button>
