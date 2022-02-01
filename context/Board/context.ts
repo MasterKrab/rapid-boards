@@ -14,6 +14,8 @@ interface IBoardContext {
   setUsersCount?: Dispatch<SetStateAction<number>>
   width: number
   setWidth?: Dispatch<SetStateAction<number>>
+  zoomMode: boolean
+  setZoomMode?: Dispatch<SetStateAction<boolean>>
   socket?: SocketResult
   username?: string
   setUsername?: Dispatch<SetStateAction<string>>
@@ -28,6 +30,7 @@ const defaultState = {
   colors: INITIAL_COLORS,
   usersCount: 0,
   width: 1,
+  zoomMode: false,
   messages: [],
 }
 

@@ -3,6 +3,8 @@ import BoardContext from 'context/Board/context'
 import { TOOLS_VALUES } from 'utils/tools'
 import generateId from 'utils/generateId'
 import ButtonTool from 'components/ButtonTool'
+import ZoomButton from 'components/ZoomButton'
+import getIsTouch from 'utils/getIsTouch'
 
 const ToolSelector = () => {
   const { tool } = useContext(BoardContext)
@@ -16,6 +18,7 @@ const ToolSelector = () => {
             tool={currentTool}
           />
         ))}
+        {getIsTouch() && <ZoomButton />}
       </section>
       <style jsx>{`
         .tools {
@@ -27,7 +30,7 @@ const ToolSelector = () => {
           transform: translateX(-50%);
         }
 
-        @media screen and (min-width: 768px) and (min-height: 480px) {
+        @media screen and (min-width: 768px) and (min-height: 600px) {
           .tools {
             flex-direction: column;
             top: 50%;
@@ -36,7 +39,7 @@ const ToolSelector = () => {
           }
         }
 
-        @media screen and (min-width: 768px) and (max-height: 480px) {
+        @media screen and (min-width: 768px) and (max-height: 600px) {
           .tools {
             left: var(--element-separation);
             transform: translateX(0);

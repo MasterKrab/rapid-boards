@@ -14,6 +14,7 @@ const BoardProvider = ({ children }: BoardProviderProps) => {
   const [colors, setColors] = useState(INITIAL_COLORS)
   const [usersCount, setUsersCount] = useState(1)
   const [width, setWidth] = useState(10)
+  const [zoomMode, setZoomMode] = useState(false)
   const [socket, setSocket] = useState<SocketResult>()
   const [username, setUsername] = useState('')
   const [usernameError, setUsernameError] = useState('')
@@ -59,6 +60,8 @@ const BoardProvider = ({ children }: BoardProviderProps) => {
         setUsersCount,
         width,
         setWidth,
+        zoomMode,
+        setZoomMode,
         socket,
         username,
         setUsername,

@@ -1,35 +1,23 @@
 import { useContext } from 'react'
 import BoardContext from 'context/Board/context'
-import { Tool } from 'utils/tools'
-import capitalize from 'utils/capitalize'
+import Move from 'components/icons/Move'
 import resetButton from 'styles/resetButton'
-import icons from './icons'
 
-interface ButtonToolProps {
-  checked: boolean
-  tool: Tool
-}
+const ButtonTool = () => {
+  const { zoomMode, setZoomMode } = useContext(BoardContext)
 
-const ButtonTool = ({ checked, tool }: ButtonToolProps) => {
-  const { setTool, zoomMode, setZoomMode } = useContext(BoardContext)
-
-  const handleClick = () => {
-    setTool!(tool)
-    setZoomMode!(false)
-  }
-
-  const Icon = icons[capitalize(tool)]
+  const handleClick = () => setZoomMode!(!zoomMode)
 
   return (
     <>
       <button
         onClick={handleClick}
-        aria-checked={!zoomMode && checked}
-        aria-label={`Select tool ${tool}`}
+        aria-checked={zoomMode}
+        aria-label="Zoom and panning"
         className="button"
-        role="radio"
+        role="switch"
       >
-        <Icon />
+        <Move />
       </button>
       <style jsx>{resetButton}</style>
       <style jsx>{`
@@ -37,6 +25,7 @@ const ButtonTool = ({ checked, tool }: ButtonToolProps) => {
           display: grid;
           place-items: center;
           background-color: var(--primary-color);
+          color: var(--secondary-color);
           width: min(3rem, 12vw);
           height: min(3rem, 12vw);
           padding: clamp(0.4rem, 2.5vw, 0.65rem);
@@ -44,10 +33,26 @@ const ButtonTool = ({ checked, tool }: ButtonToolProps) => {
           box-shadow: var(--element-shadow);
         }
 
+        @media screen and (max-width: 400px) and (min-height: 600px) {
+          .button {
+            position: absolute;
+            bottom: 115%;
+            right: 0;
+          }
+        }
+
         @media screen and (min-width: 400px) and (max-width: 450px) and (min-height: 480px) {
           .button {
             width: min(2.75rem, 10vw);
             height: min(2.75rem, 10vw);
+          }
+        }
+
+        @media screen and (min-width: 750px) and (max-width: 850px) and (max-height: 600px) {
+          .button {
+            position: absolute;
+            left: 0;
+            bottom: 115%;
           }
         }
 

@@ -11,7 +11,8 @@ import getHexColorFromCanvas from 'utils/getHexColorFromCanvas'
 import PreloadImages from 'components/PreloadImages'
 
 const Canvas = () => {
-  const { socket, tool, color, width, setColor } = useContext(BoardContext)
+  const { socket, tool, color, width, setColor, zoomMode, setZoomMode } =
+    useContext(BoardContext)
   const windowSize = useWindowSize()
   const element = useRef<HTMLCanvasElement>(null)
   const canvasRef = useRef<fabric.Canvas>()
@@ -21,7 +22,6 @@ const Canvas = () => {
   const fingerDistance = useRef(0)
   const isDragging = useRef(false)
   const isPinch = useRef(false)
-  const [zoomMode, setZoomMode] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
 
   const changeZoom = (zoomIn: boolean) => {
@@ -47,7 +47,7 @@ const Canvas = () => {
   useWindowEvent('keydown', (e: KeyboardEvent) => {
     const { ctrlKey, key } = e
 
-    if (ctrlKey) setZoomMode(true)
+    if (ctrlKey) setZoomMode!(true)
 
     const canvas = canvasRef.current
 
@@ -61,16 +61,22 @@ const Canvas = () => {
   })
 
   useWindowEvent('keyup', ({ ctrlKey }: KeyboardEvent) => {
-    if (!ctrlKey) setZoomMode(false)
+    if (!ctrlKey) setZoomMode!(false)
   })
 
   const getFingerDistance = (x1: number, y1: number, x2: number, y2: number) =>
     Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))
 
   useWindowEvent('touchstart', (e: TouchEvent) => {
-    if (e.touches.length !== 2) return
-    isPinch.current = true
-    setZoomMode(true)
+    if (!zoomMode) return
+
+    if (e.touches.length === 1) {
+      const { clientX: x, clientY: y } = e.touches[0]
+
+      originX.current = x
+      originY.current = y
+      return
+    }
 
     const { clientX: x1, clientY: y1 } = e.touches[0]
     const { clientX: x2, clientY: y2 } = e.touches[1]
@@ -88,11 +94,24 @@ const Canvas = () => {
   })
 
   useWindowEvent('touchmove', (e: TouchEvent) => {
-    if (e.touches.length !== 2) return
+    if (!zoomMode) return
 
     const canvas = canvasRef.current
 
     if (!canvas) return
+
+    if (e.touches.length === 1) {
+      const { clientX: x, clientY: y } = e.touches[0]
+
+      canvas.relativePan({
+        x: x - originX.current,
+        y: y - originY.current,
+      })
+
+      originX.current = x
+      originY.current = y
+      return
+    }
 
     const { clientX: x1, clientY: y1 } = e.touches[0]
     const { clientX: x2, clientY: y2 } = e.touches[1]
@@ -126,13 +145,6 @@ const Canvas = () => {
     } else {
       canvas.zoomToPoint(pointer, newZoom)
     }
-
-    e.preventDefault()
-  })
-
-  useWindowEvent('touchend', () => {
-    isPinch.current = false
-    setZoomMode(false)
   })
 
   useEffect(() => {
@@ -212,11 +224,12 @@ const Canvas = () => {
 
       if (isDragging.current) {
         canvas.relativePan({ x: e.movementX, y: e.movementY })
-
         originX.current = e.clientX
         originY.current = e.clientY
         return
       }
+
+      if (zoomMode) return
 
       if (tool === TOOLS.COLOR_PICKER) return
       if (!isPainting.current) return
@@ -266,9 +279,7 @@ const Canvas = () => {
     })
 
     canvas.on('mouse:down', ({ e }) => {
-      if (isPinch.current) return
-
-      if (zoomMode) {
+      if (zoomMode && !(e as unknown as TouchEvent).touches) {
         originX.current = e.clientX
         originY.current = e.clientY
         isDragging.current = true
