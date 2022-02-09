@@ -45,9 +45,13 @@ const Canvas = () => {
   }
 
   useWindowEvent('keydown', (e: KeyboardEvent) => {
+
     const { ctrlKey, key } = e
 
-    if (ctrlKey) setZoomMode!(true)
+    if (ctrlKey) {
+      e.preventDefault()
+      setZoomMode!(true)
+    } 
 
     const canvas = canvasRef.current
 
@@ -216,6 +220,8 @@ const Canvas = () => {
     canvas.on('mouse:wheel', ({ e }) => changeZoom(e.deltaY < 0))
 
     canvas.on('mouse:move', async ({ e }) => {
+      e.preventDefault()
+
       if (isPinch.current) return
 
       const { x, y } = canvas.getPointer(e)
@@ -279,6 +285,8 @@ const Canvas = () => {
     })
 
     canvas.on('mouse:down', ({ e }) => {
+      e.preventDefault()
+
       if (zoomMode && !(e as unknown as TouchEvent).touches) {
         originX.current = e.clientX
         originY.current = e.clientY
