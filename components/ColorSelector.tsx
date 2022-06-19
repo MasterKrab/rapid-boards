@@ -31,7 +31,7 @@ const ColorSelector = () => {
           Select color
         </VisuallyHidden>
         {colors.map((color) => (
-          <ButtonColor key={Math.random()} color={color} />
+          <ButtonColor key={generateId()} color={color} />
         ))}
       </div>
       <style jsx>{`
