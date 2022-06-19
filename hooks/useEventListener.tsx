@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-const useWindowEvent = <Type extends keyof HTMLElementEventMap>(
+const useEventListener = <Type extends keyof HTMLElementEventMap>(
   element: HTMLElement,
   type: Type,
   handler: (this: HTMLElement, event: HTMLElementEventMap[Type]) => void
@@ -12,4 +12,4 @@ const useWindowEvent = <Type extends keyof HTMLElementEventMap>(
   }, [element, type, handler])
 }
 
-export default useWindowEvent
+export default useEventListener
