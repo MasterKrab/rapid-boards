@@ -1,22 +1,21 @@
-import { useContext, FocusEvent, Fragment } from 'react'
+import { useContext, useRef, ChangeEvent } from 'react'
 import BoardContext from 'context/Board/context'
-import generateId from 'utils/generateId'
 import ButtonColor from 'components/ButtonColor'
 import VisuallyHidden from './VisuallyHidden'
 
 const ColorSelector = () => {
   const { color, setColor, colors } = useContext(BoardContext)
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  const handleBlur = (e: FocusEvent) => {
-    const { value } = e.target as HTMLInputElement
-    setColor!(value)
-  }
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setColor!(e.target.value)
 
   return (
-    <Fragment key={`${color}-${generateId()}`}>
+    <>
       <input
-        onBlur={handleBlur}
-        defaultValue={color}
+        ref={inputRef}
+        value={color}
+        onChange={handleChange}
         aria-label="Color"
         type="color"
         name="color"
@@ -68,7 +67,7 @@ const ColorSelector = () => {
           }
         }
       `}</style>
-    </Fragment>
+    </>
   )
 }
 

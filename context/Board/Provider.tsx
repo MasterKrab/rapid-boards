@@ -39,14 +39,6 @@ const BoardProvider = ({ children }: BoardProviderProps) => {
     }
   }, [])
 
-  useEffect(() => {
-    if (colors.includes(color)) return
-
-    const newColors = [color, ...colors.slice(0, -1)]
-    setColors(newColors)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [color])
-
   return (
     <BoardContext.Provider
       value={{
