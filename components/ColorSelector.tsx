@@ -1,4 +1,5 @@
 import { useContext, useRef, ChangeEvent } from 'react'
+import generateId from 'utils/generateId'
 import BoardContext from 'context/Board/context'
 import ButtonColor from 'components/ButtonColor'
 import VisuallyHidden from './VisuallyHidden'
